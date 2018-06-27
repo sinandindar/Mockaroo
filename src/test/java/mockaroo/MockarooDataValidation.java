@@ -16,23 +16,9 @@ import org.testng.Assert;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class MockarooDataValidation {
-	private static int N = 1001;
-	private static MockarooDataValidation[] cityList = new MockarooDataValidation[N];		//This array holds all city objects
-	public String city;
-	public String country;
-
-	public String getCity() {
-		return city;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public MockarooDataValidation(String city, String country){
-		this.city = city;
-		this.country = country;
-	}
+	
+	public static ArrayList<String> Cities = new ArrayList<String>();
+	public static ArrayList<String> Countries = new ArrayList<String>();
 
 	public static void main(String[] args) throws InterruptedException {
 		WebDriverManager.chromedriver().setup();
@@ -108,24 +94,18 @@ public class MockarooDataValidation {
 		Thread.sleep(500);
 		driver.findElement(By.xpath("//*[@id=\"download\"]")).click();
 
-		//17
+		//17 & 20 & 21
 		Thread.sleep(1000);
 		loadCities("C:/Users/sinan/Downloads/MOCK_DATA.csv");
 
 		//18
-		Assert.assertEquals(cityList[0].getCity(), "City");
-		Assert.assertEquals(cityList[0].getCountry(), "Country");
+		Assert.assertEquals(Cities.get(0), "City");
+		Assert.assertEquals(Countries.get(0), "Country");
 
 		//19
-		Assert.assertTrue(cityList.length == 1001);
-
-		//20 & 21
-		ArrayList<String> Cities = new ArrayList<String>();
-		ArrayList<String> Countries = new ArrayList<String>();
-		for(int i = 1; i < cityList.length; i++) {
-			Cities.add(i - 1, cityList[i].getCity());
-			Countries.add(i - 1, cityList[i].getCountry());
-		}
+		Cities.remove(0);
+		Countries.remove(0);
+		Assert.assertTrue(Cities.size() == 1000 && Countries.size() == 1000);
 
 		//22
 		Collections.sort(Cities);
@@ -176,7 +156,6 @@ public class MockarooDataValidation {
 	
 	private static void loadCities(String fileName){
 		String line = null;
-		int count = 0;
 		try {
 			FileReader fileReader = new FileReader(fileName);
 			BufferedReader bufferedReader =  new BufferedReader(fileReader);
@@ -184,8 +163,8 @@ public class MockarooDataValidation {
 				String[] c = line.split(",");
 				String city = c[0];
 				String country = c[1];
-				MockarooDataValidation ct = new MockarooDataValidation(city, country);
-				cityList[count++] = ct;
+				Cities.add(city);
+				Countries.add(country);
 			}   
 			bufferedReader.close(); 
 		}
